@@ -1,0 +1,9 @@
+{
+  "name": "ritmo-ancestral-v11",
+  "private": true,
+  "version": "11.0.0",
+  "type": "module",
+  "dependencies": {
+    "@netlify/blobs": "^10.0.0"
+  }
+}

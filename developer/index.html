@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Ritmo Ancestral · Developer Edition</title>
+<style>
+:root{--bg:#F8F1E8;--card:#FFF8F2;--coral:#DD7F6E;--text:#493732;--muted:#866D65;--line:#E8D8CC}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}.wrap{max-width:980px;margin:auto;padding:18px}h1{margin:0 0 4px}.muted{color:var(--muted);font-size:13px}.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}.btn{border:1px solid var(--line);background:var(--card);padding:9px 12px;border-radius:11px;color:var(--text)}.primary{background:var(--coral);color:white;border-color:var(--coral)}.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px;margin-bottom:12px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}label{font-size:12px;color:var(--muted);display:block;margin-bottom:4px}input,textarea,select{width:100%;border:1px solid var(--line);background:white;border-radius:10px;padding:9px;font:inherit;color:var(--text)}textarea{min-height:84px;resize:vertical}.guide-editor{border-top:1px solid var(--line);padding-top:12px;margin-top:12px}.row-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:8px}.preview{border:1px solid var(--line);border-radius:16px;overflow:hidden;background:white}.preview iframe{width:100%;height:620px;border:0}@media(max-width:700px){.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>Ritmo Ancestral · Developer Edition</h1>
+<div class="muted">Edita contenido sin tocar código. Después exporta content.json o el paquete público.</div>
+
+<div class="toolbar">
+ <button class="btn primary" id="saveLocal">Guardar borrador</button><button class="btn primary" id="publishLive">Publicar en usuarios</button>
+ <button class="btn" id="downloadJson">Descargar content.json</button>
+ <button class="btn" id="loadJsonBtn">Importar content.json</button>
+ <input id="loadJson" type="file" accept=".json,application/json" hidden>
+ <button class="btn" id="loadLiveBtn">Cargar versión publicada</button><button class="btn" id="resetBtn">Restaurar base</button>
+</div>
+
+
+<div class="card">
+ <h2>Publicación directa</h2>
+ <div class="grid">
+   <div><label>Contraseña de administrador</label><input id="adminPassword" type="password" autocomplete="current-password" placeholder="ADMIN_PASSWORD de Netlify"></div>
+   <div><label>Estado</label><div id="publishStatus" class="muted" style="padding:10px 0">Sin publicar en esta sesión.</div></div>
+ </div>
+ <p class="muted">La contraseña no se guarda. Se envía únicamente a la función segura de Netlify para autorizar la publicación.</p>
+</div>
+
+<div class="card">
+ <div class="grid">
+  <div><label>Nombre de la app</label><input id="appName"></div>
+  <div><label>Subtítulo</label><input id="tagline"></div>
+ </div>
+</div>
+
+<div class="card">
+ <h2>Contenido de la Guía</h2>
+ <div class="muted">Aquí puedes desarrollar las explicaciones para usuarios.</div>
+ <div id="guideEditors"></div>
+ <div class="toolbar"><button class="btn" id="addGuide">+ Añadir bloque de guía</button></div>
+</div>
+
+<div class="card">
+ <h2>Hábitos propuestos</h2>
+ <div id="habitEditors"></div>
+ <div class="toolbar"><button class="btn" id="addHabit">+ Añadir hábito</button></div>
+</div>
+
+<div class="card">
+ <h2>Suplementación</h2>
+ <div id="suppEditors"></div>
+ <div class="toolbar"><button class="btn" id="addSupp">+ Añadir suplemento</button></div>
+</div>
+
+<div class="card">
+ <h2>Cómo publicar</h2>
+ <p class="muted">1) Edita aquí. 2) Descarga content.json. 3) Sustituye el content.json de la carpeta raíz. 4) Sube la carpeta completa a Netlify. La versión pública leerá ese contenido.</p>
+</div>
+</div>
+<script>
+const BASE={"app": {"name": "Ritmo Ancestral", "tagline": "Guía diaria + registro de hábitos", "theme": {"background": "#F8F1E8", "card": "#FFF8F2", "peach": "#F6D1B5", "orange": "#EFA36A", "coral": "#DD7F6E", "sunset": "#B95F62", "wine": "#774A50", "text": "#493732", "muted": "#866D65"}}, "guide": [{"id": "circadian", "title": "Luz y ritmo circadiano", "icon": "☀️", "priority": "Fundamento", "summary": "Sincroniza tu reloj interno con el ciclo natural de luz y oscuridad.", "why": "La luz exterior al inicio del día y la reducción de luz intensa por la noche ayudan a mantener horarios de sueño y vigilia coherentes.", "when": "Prioriza luz natural al despertar, tiempo exterior durante el día y un ambiente más oscuro al acercarse la noche."}, {"id": "movement", "title": "Movimiento y rendimiento", "icon": "💪", "priority": "Fundamento", "summary": "Fuerza, actividad aeróbica y movimiento cotidiano.", "why": "El entrenamiento de fuerza, la capacidad aeróbica y el movimiento frecuente cubren funciones distintas y complementarias.", "when": "Distribuye fuerza y cardio durante la semana, y evita concentrar todo el movimiento en una única sesión."}, {"id": "nutrition", "title": "Nutrición y metabolismo", "icon": "🥩", "priority": "Fundamento", "summary": "Comida real, proteína suficiente y la estrategia low carb que hayas elegido.", "why": "La calidad de los alimentos, la saciedad, el aporte proteico y la regularidad de las comidas importan más que perseguir una regla aislada.", "when": "Usa el ayuno y el low carb como herramientas compatibles con tu entrenamiento, sueño y vida social."}, {"id": "nature", "title": "Naturaleza y hormesis", "icon": "🌿", "priority": "Complementario", "summary": "Tiempo exterior, grounding y exposición al frío.", "why": "El tiempo en naturaleza y algunos estímulos horméticos pueden integrarse en la rutina, pero no sustituyen los fundamentos.", "when": "Úsalos cuando encajen bien con tu recuperación y tu día."}, {"id": "mind", "title": "Mente y recuperación", "icon": "🧠", "priority": "Fundamento", "summary": "Relajación, desarrollo personal y sueño.", "why": "La recuperación física y mental condiciona el rendimiento y la adherencia al resto de hábitos.", "when": "Reserva cada día un espacio deliberado para bajar activación y dormir suficiente."}, {"id": "relations", "title": "Relaciones", "icon": "❤️", "priority": "Fundamento", "summary": "Familia, relaciones y conexión social.", "why": "Un estilo de vida saludable no se limita a dieta y ejercicio; la conexión social también forma parte del bienestar.", "when": "Protege tiempo real para relaciones significativas."}], "habits": [{"id": "light_morning", "name": "Amanecer / luz natural matinal", "group": "Luz y ritmo circadiano", "target": 7}, {"id": "aerobic", "name": "Deporte aeróbico", "group": "Movimiento y rendimiento", "target": 3}, {"id": "strength", "name": "Ejercicio de fuerza", "group": "Movimiento y rendimiento", "target": 3}, {"id": "lowcarb", "name": "Dieta low carb", "group": "Nutrición y metabolismo", "target": 7}, {"id": "grounding", "name": "Grounding", "group": "Naturaleza y hormesis", "target": 7}, {"id": "cold", "name": "Exposición al frío", "group": "Naturaleza y hormesis", "target": 3}, {"id": "fast16", "name": "Ayuno 16 h", "group": "Nutrición y metabolismo", "target": 5}, {"id": "sunset", "name": "Ver atardecer", "group": "Luz y ritmo circadiano", "target": 7}, {"id": "screens20", "name": "0 pantallas desde las 20:00", "group": "Luz y ritmo circadiano", "target": 7}, {"id": "bluelight20", "name": "0 luz azul desde las 20:00", "group": "Luz y ritmo circadiano", "target": 7}, {"id": "sleep22", "name": "Acostarse a las 22:00", "group": "Luz y ritmo circadiano", "target": 7}, {"id": "development", "name": "Desarrollo personal", "group": "Mente y recuperación", "target": 5}, {"id": "relax", "name": "Relajación", "group": "Mente y recuperación", "target": 7}, {"id": "family", "name": "Familia", "group": "Relaciones", "target": 7}], "supplements": [{"id": "seawater", "name": "Agua marina", "dose": "", "time": "Mañana", "group": "Hidratación"}, {"id": "vitc", "name": "Vitamina C", "dose": "", "time": "Mañana", "group": "Micronutrientes"}, {"id": "collagen", "name": "Colágeno", "dose": "", "time": "Mañana", "group": "Estructura"}, {"id": "ashwagandha", "name": "Ashwagandha", "dose": "", "time": "Tarde", "group": "Adaptógenos"}, {"id": "magnesium", "name": "Magnesio", "dose": "", "time": "Noche", "group": "Minerales"}]};
+let state=JSON.parse(localStorage.getItem("ritmo-dev-v11")||"null")||structuredClone(BASE);
+const $=id=>document.getElementById(id);
+function esc(s){return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
+function syncTop(){state.app.name=$("appName").value;state.app.tagline=$("tagline").value}
+function render(){
+ $("appName").value=state.app.name||"";$("tagline").value=state.app.tagline||"";
+ const g=$("guideEditors");g.innerHTML="";state.guide.forEach((x,i)=>{const d=document.createElement("div");d.className="guide-editor";d.innerHTML=`
+ <div class="grid"><div><label>Título</label><input data-k="title" value="${esc(x.title)}"></div><div><label>Icono</label><input data-k="icon" value="${esc(x.icon)}"></div></div>
+ <div class="grid" style="margin-top:8px"><div><label>Prioridad</label><select data-k="priority"><option ${x.priority==="Fundamento"?"selected":""}>Fundamento</option><option ${x.priority==="Complementario"?"selected":""}>Complementario</option></select></div><div><label>Resumen</label><input data-k="summary" value="${esc(x.summary)}"></div></div>
+ <div style="margin-top:8px"><label>Por qué</label><textarea data-k="why">${esc(x.why)}</textarea></div>
+ <div style="margin-top:8px"><label>Cuándo</label><textarea data-k="when">${esc(x.when)}</textarea></div>
+ <div class="row-actions"><button class="btn" data-del>Eliminar</button></div>`;
+ d.querySelectorAll("[data-k]").forEach(el=>el.oninput=()=>{state.guide[i][el.dataset.k]=el.value});
+ d.querySelector("[data-del]").onclick=()=>{state.guide.splice(i,1);render()};g.append(d)});
+ const h=$("habitEditors");h.innerHTML="";state.habits.forEach((x,i)=>{const d=document.createElement("div");d.className="guide-editor";d.innerHTML=`<div class="grid"><div><label>Nombre</label><input data-k="name" value="${esc(x.name)}"></div><div><label>Grupo</label><input data-k="group" value="${esc(x.group)}"></div></div><div class="grid" style="margin-top:8px"><div><label>Objetivo semanal</label><input type="number" min="1" max="7" data-k="target" value="${x.target||7}"></div><div></div></div><div class="row-actions"><button class="btn" data-del>Eliminar</button></div>`;d.querySelectorAll("[data-k]").forEach(el=>el.oninput=()=>{state.habits[i][el.dataset.k]=el.type==="number"?Number(el.value):el.value});d.querySelector("[data-del]").onclick=()=>{state.habits.splice(i,1);render()};h.append(d)});
+ const s=$("suppEditors");s.innerHTML="";state.supplements.forEach((x,i)=>{const d=document.createElement("div");d.className="guide-editor";d.innerHTML=`<div class="grid"><div><label>Nombre</label><input data-k="name" value="${esc(x.name)}"></div><div><label>Grupo</label><input data-k="group" value="${esc(x.group)}"></div></div><div class="grid" style="margin-top:8px"><div><label>Dosis/cantidad</label><input data-k="dose" value="${esc(x.dose||"")}"></div><div><label>Momento</label><input data-k="time" value="${esc(x.time||"")}"></div></div><div class="row-actions"><button class="btn" data-del>Eliminar</button></div>`;d.querySelectorAll("[data-k]").forEach(el=>el.oninput=()=>{state.supplements[i][el.dataset.k]=el.value});d.querySelector("[data-del]").onclick=()=>{state.supplements.splice(i,1);render()};s.append(d)});
+}
+
+async function loadPublished(){
+  const status=$("publishStatus");
+  status.textContent="Cargando versión publicada…";
+  try{
+    const r=await fetch("/api/content",{cache:"no-store"});
+    if(!r.ok) throw new Error("No hay contenido publicado todavía.");
+    state=await r.json();
+    render();
+    status.textContent="Versión publicada cargada.";
+  }catch(e){
+    status.textContent=e.message||"No se pudo cargar.";
+  }
+}
+async function publishNow(){
+  syncTop();
+  const status=$("publishStatus");
+  const password=$("adminPassword").value;
+  if(!password){status.textContent="Introduce la contraseña de administrador.";return}
+  status.textContent="Publicando…";
+  try{
+    const r=await fetch("/api/publish",{
+      method:"POST",
+      headers:{
+        "content-type":"application/json",
+        "x-admin-password":password
+      },
+      body:JSON.stringify(state)
+    });
+    const body=await r.json().catch(()=>({}));
+    if(!r.ok) throw new Error(body.error||"Error al publicar");
+    localStorage.setItem("ritmo-dev-v11",JSON.stringify(state));
+    status.textContent="Publicado correctamente · "+new Date(body.publishedAt).toLocaleString("es-ES");
+  }catch(e){
+    status.textContent="No publicado: "+(e.message||"error");
+  }
+}
+
+$("saveLocal").onclick=()=>{syncTop();localStorage.setItem("ritmo-dev-v11",JSON.stringify(state));alert("Borrador guardado en este navegador.")};$("publishLive").onclick=publishNow;$("loadLiveBtn").onclick=loadPublished;
+$("downloadJson").onclick=()=>{syncTop();const b=new Blob([JSON.stringify(state,null,2)],{type:"application/json"}),a=document.createElement("a");a.href=URL.createObjectURL(b);a.download="content.json";a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)};
+$("loadJsonBtn").onclick=()=>$("loadJson").click();$("loadJson").onchange=async e=>{const f=e.target.files[0];if(!f)return;try{state=JSON.parse(await f.text());render()}catch(err){alert("JSON no válido.")}};
+$("resetBtn").onclick=()=>{if(confirm("¿Restaurar el contenido base?")){state=structuredClone(BASE);render()}};
+$("addGuide").onclick=()=>{state.guide.push({id:"guide-"+Date.now(),title:"Nuevo bloque",icon:"☀️",priority:"Fundamento",summary:"",why:"",when:""});render()};
+$("addHabit").onclick=()=>{state.habits.push({id:"habit-"+Date.now(),name:"Nuevo hábito",group:"Otros",target:7});render()};
+$("addSupp").onclick=()=>{state.supplements.push({id:"supp-"+Date.now(),name:"Nuevo suplemento",dose:"",time:"Flexible",group:"Otros"});render()};
+render();
+</script>
+</body></html>

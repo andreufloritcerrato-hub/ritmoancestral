@@ -1,0 +1,196 @@
+{
+  "app": {
+    "name": "Ritmo Ancestral",
+    "tagline": "Guía diaria + registro de hábitos",
+    "theme": {
+      "background": "#F8F1E8",
+      "card": "#FFF8F2",
+      "peach": "#F6D1B5",
+      "orange": "#EFA36A",
+      "coral": "#DD7F6E",
+      "sunset": "#B95F62",
+      "wine": "#774A50",
+      "text": "#493732",
+      "muted": "#866D65"
+    }
+  },
+  "guide": [
+    {
+      "id": "circadian",
+      "title": "Luz y ritmo circadiano",
+      "icon": "☀️",
+      "priority": "Fundamento",
+      "summary": "Sincroniza tu reloj interno con el ciclo natural de luz y oscuridad.",
+      "why": "La luz exterior al inicio del día y la reducción de luz intensa por la noche ayudan a mantener horarios de sueño y vigilia coherentes.",
+      "when": "Prioriza luz natural al despertar, tiempo exterior durante el día y un ambiente más oscuro al acercarse la noche."
+    },
+    {
+      "id": "movement",
+      "title": "Movimiento y rendimiento",
+      "icon": "💪",
+      "priority": "Fundamento",
+      "summary": "Fuerza, actividad aeróbica y movimiento cotidiano.",
+      "why": "El entrenamiento de fuerza, la capacidad aeróbica y el movimiento frecuente cubren funciones distintas y complementarias.",
+      "when": "Distribuye fuerza y cardio durante la semana, y evita concentrar todo el movimiento en una única sesión."
+    },
+    {
+      "id": "nutrition",
+      "title": "Nutrición y metabolismo",
+      "icon": "🥩",
+      "priority": "Fundamento",
+      "summary": "Comida real, proteína suficiente y la estrategia low carb que hayas elegido.",
+      "why": "La calidad de los alimentos, la saciedad, el aporte proteico y la regularidad de las comidas importan más que perseguir una regla aislada.",
+      "when": "Usa el ayuno y el low carb como herramientas compatibles con tu entrenamiento, sueño y vida social."
+    },
+    {
+      "id": "nature",
+      "title": "Naturaleza y hormesis",
+      "icon": "🌿",
+      "priority": "Complementario",
+      "summary": "Tiempo exterior, grounding y exposición al frío.",
+      "why": "El tiempo en naturaleza y algunos estímulos horméticos pueden integrarse en la rutina, pero no sustituyen los fundamentos.",
+      "when": "Úsalos cuando encajen bien con tu recuperación y tu día."
+    },
+    {
+      "id": "mind",
+      "title": "Mente y recuperación",
+      "icon": "🧠",
+      "priority": "Fundamento",
+      "summary": "Relajación, desarrollo personal y sueño.",
+      "why": "La recuperación física y mental condiciona el rendimiento y la adherencia al resto de hábitos.",
+      "when": "Reserva cada día un espacio deliberado para bajar activación y dormir suficiente."
+    },
+    {
+      "id": "relations",
+      "title": "Relaciones",
+      "icon": "❤️",
+      "priority": "Fundamento",
+      "summary": "Familia, relaciones y conexión social.",
+      "why": "Un estilo de vida saludable no se limita a dieta y ejercicio; la conexión social también forma parte del bienestar.",
+      "when": "Protege tiempo real para relaciones significativas."
+    }
+  ],
+  "habits": [
+    {
+      "id": "light_morning",
+      "name": "Amanecer / luz natural matinal",
+      "group": "Luz y ritmo circadiano",
+      "target": 7
+    },
+    {
+      "id": "aerobic",
+      "name": "Deporte aeróbico",
+      "group": "Movimiento y rendimiento",
+      "target": 3
+    },
+    {
+      "id": "strength",
+      "name": "Ejercicio de fuerza",
+      "group": "Movimiento y rendimiento",
+      "target": 3
+    },
+    {
+      "id": "lowcarb",
+      "name": "Dieta low carb",
+      "group": "Nutrición y metabolismo",
+      "target": 7
+    },
+    {
+      "id": "grounding",
+      "name": "Grounding",
+      "group": "Naturaleza y hormesis",
+      "target": 7
+    },
+    {
+      "id": "cold",
+      "name": "Exposición al frío",
+      "group": "Naturaleza y hormesis",
+      "target": 3
+    },
+    {
+      "id": "fast16",
+      "name": "Ayuno 16 h",
+      "group": "Nutrición y metabolismo",
+      "target": 5
+    },
+    {
+      "id": "sunset",
+      "name": "Ver atardecer",
+      "group": "Luz y ritmo circadiano",
+      "target": 7
+    },
+    {
+      "id": "screens20",
+      "name": "0 pantallas desde las 20:00",
+      "group": "Luz y ritmo circadiano",
+      "target": 7
+    },
+    {
+      "id": "bluelight20",
+      "name": "0 luz azul desde las 20:00",
+      "group": "Luz y ritmo circadiano",
+      "target": 7
+    },
+    {
+      "id": "sleep22",
+      "name": "Acostarse a las 22:00",
+      "group": "Luz y ritmo circadiano",
+      "target": 7
+    },
+    {
+      "id": "development",
+      "name": "Desarrollo personal",
+      "group": "Mente y recuperación",
+      "target": 5
+    },
+    {
+      "id": "relax",
+      "name": "Relajación",
+      "group": "Mente y recuperación",
+      "target": 7
+    },
+    {
+      "id": "family",
+      "name": "Familia",
+      "group": "Relaciones",
+      "target": 7
+    }
+  ],
+  "supplements": [
+    {
+      "id": "seawater",
+      "name": "Agua marina",
+      "dose": "",
+      "time": "Mañana",
+      "group": "Hidratación"
+    },
+    {
+      "id": "vitc",
+      "name": "Vitamina C",
+      "dose": "",
+      "time": "Mañana",
+      "group": "Micronutrientes"
+    },
+    {
+      "id": "collagen",
+      "name": "Colágeno",
+      "dose": "",
+      "time": "Mañana",
+      "group": "Estructura"
+    },
+    {
+      "id": "ashwagandha",
+      "name": "Ashwagandha",
+      "dose": "",
+      "time": "Tarde",
+      "group": "Adaptógenos"
+    },
+    {
+      "id": "magnesium",
+      "name": "Magnesio",
+      "dose": "",
+      "time": "Noche",
+      "group": "Minerales"
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+CONFIGURACIÓN RÁPIDA
+
+1. Crea un repositorio en GitHub y sube TODO este proyecto.
+2. Netlify → Add new project → Import an existing project → GitHub.
+3. Selecciona el repositorio.
+4. Deploy.
+5. Netlify → Project configuration → Environment variables.
+6. Añade ADMIN_PASSWORD con una contraseña larga.
+7. Redeploy.
+8. Abre /developer/ y prueba “Cargar versión publicada”.
+9. Edita algo, introduce la contraseña y pulsa “Publicar en usuarios”.
+10. Abre /public/ y recarga: el cambio debería aparecer.
+
+Importante: para esta v11 recomiendo despliegue desde GitHub/Netlify build, no solo arrastrar una carpeta estática, porque hay Functions y una dependencia npm.

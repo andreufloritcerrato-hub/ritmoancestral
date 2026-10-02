@@ -1,0 +1,51 @@
+RITMO ANCESTRAL · v11 CMS / PUBLICACIÓN DIRECTA
+
+QUÉ CAMBIA
+La Developer Edition ya puede publicar cambios directamente a la aplicación pública.
+No necesitas descargar content.json y volver a desplegar cada vez que cambias un texto.
+
+ARQUITECTURA
+- /developer/ : editor privado
+- /public/ : app para usuarios
+- /api/content : función que sirve el contenido publicado
+- /api/publish : función protegida que publica contenido
+- Netlify Blobs : almacenamiento persistente del contenido
+- content.json : contenido base/fallback y copia versionable
+
+SEGURIDAD
+La publicación está protegida por una variable de entorno llamada ADMIN_PASSWORD.
+La contraseña NO debe escribirse en ningún archivo del proyecto.
+
+CONFIGURACIÓN EN NETLIFY
+1. Sube este proyecto a un repositorio GitHub.
+2. En Netlify crea/importa el sitio desde ese repositorio.
+3. Netlify detectará netlify.toml y package.json.
+4. En Netlify ve a Project configuration / Environment variables.
+5. Crea:
+   ADMIN_PASSWORD = una contraseña larga que solo conozcas tú
+6. Asegúrate de que la variable está disponible para Functions.
+7. Haz un nuevo deploy después de crear/cambiar ADMIN_PASSWORD.
+
+USO
+Editor:
+https://TU-SITIO.netlify.app/developer/
+
+Usuarios:
+https://TU-SITIO.netlify.app/public/
+o simplemente la raíz del dominio, que redirige a /public/.
+
+FLUJO EDITORIAL
+1. Entra en /developer/
+2. Pulsa “Cargar versión publicada” si quieres partir de lo que ven los usuarios.
+3. Edita textos/hábitos/suplementos.
+4. Introduce ADMIN_PASSWORD.
+5. Pulsa “Publicar en usuarios”.
+6. La versión pública leerá el nuevo contenido automáticamente.
+
+COPIAS DE SEGURIDAD
+Mantengo los botones Importar/Descargar content.json.
+Úsalos para tener versiones locales del contenido.
+
+NOTA TÉCNICA
+Netlify Blobs mantiene datos site-wide y persiste a través de nuevos deploys.
+Las funciones usan @netlify/blobs y la variable ADMIN_PASSWORD del entorno.

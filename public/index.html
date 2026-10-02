@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#F8F1E8">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Ritmo">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-192.png">
+<title>Ritmo Ancestral</title>
+<style>
+:root{--bg:#F8F1E8;--card:#FFF8F2;--peach:#F6D1B5;--orange:#EFA36A;--coral:#DD7F6E;--sunset:#B95F62;--wine:#774A50;--text:#493732;--muted:#866D65;--line:#E8D8CC}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",sans-serif}.app{max-width:820px;margin:auto;padding:16px 14px 44px}header{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}h1{margin:0 0 4px;font-size:26px}.muted{color:var(--muted);font-size:13px}.tabs{display:flex;gap:7px;overflow:auto;position:sticky;top:0;z-index:10;padding:10px 0;background:rgba(248,241,232,.94);backdrop-filter:blur(12px)}button{font:inherit}.tabs button,.action{border:1px solid var(--line);background:var(--card);color:var(--text);padding:9px 11px;border-radius:12px}.tabs button.active{background:var(--coral);color:white;border-color:var(--coral)}.view.hidden{display:none}.hero{background:linear-gradient(135deg,#fff7ef,#F6D1B5 40%,#EFA36A 72%,#DD7F6E);border:1px solid var(--line);border-radius:24px;padding:17px}.hero h2{margin:4px 0 7px}.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:11px}.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:13px}.section-title{font-size:16px;font-weight:800;margin:17px 2px 9px}.guide-card{display:flex;gap:10px}.guide-card .icon{font-size:24px}.tag{display:inline-block;margin-top:4px;padding:4px 7px;border-radius:999px;background:#F8E2D7;color:#965044;font-size:10px;font-weight:800}.guide-card p{font-size:12px;line-height:1.4;color:var(--muted)}.theme-card{background:var(--card);border:1px solid var(--line);border-radius:18px;overflow:hidden}.theme-head{padding:12px 13px;background:linear-gradient(180deg,#fffaf5,#f8e6da);border-bottom:1px solid var(--line);font-weight:800}.check-row{display:flex;gap:10px;align-items:center;padding:11px 13px;border-bottom:1px solid var(--line)}.check-row:last-child{border-bottom:0}.check-row input{width:23px;height:23px;accent-color:var(--coral)}.grow{flex:1}.meta{font-size:11px;color:var(--muted);margin-top:2px}@media(max-width:700px){.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="app">
+<header><div><h1 id="appName">Ritmo Ancestral</h1><div class="muted" id="tagline"></div></div></header>
+<nav class="tabs"><button id="tabToday" class="active">Hoy</button><button id="tabGuide">Guía</button><button id="tabSettings">Ajustes</button></nav>
+<section id="todayView" class="view">
+ <div class="hero"><div class="muted">TU DÍA</div><h2>Guía + registro</h2><p id="todayIntro">Completa los hábitos propuestos y usa la guía para entender el sentido de cada bloque.</p></div>
+ <div class="section-title">Hábitos de hoy</div><div id="habitGrid" class="grid"></div>
+ <div class="section-title">Suplementación</div><div id="suppGrid" class="grid"></div>
+</section>
+<section id="guideView" class="view hidden">
+ <div class="hero"><div class="muted">GUÍA</div><h2>Qué hacer y por qué</h2><p>Los fundamentos aparecen primero; los complementarios se distinguen para no confundir prioridad con preferencia personal.</p></div>
+ <div id="guideGrid" class="grid" style="margin-top:12px"></div>
+</section>
+<section id="settingsView" class="view hidden">
+ <div class="card"><b>Versión pública</b><p class="muted">Esta versión no incluye edición de contenidos. El contenido se genera desde la Developer Edition.</p></div>
+</section>
+</div>
+<script>
+let CONTENT=null;
+const DATA_KEY="ritmo-public-data-v10";
+const SUPP_KEY="ritmo-public-supp-v10";
+const $=id=>document.getElementById(id);
+function getJSON(k,f){try{return JSON.parse(localStorage.getItem(k))??f}catch(e){return f}}
+let DATA=getJSON(DATA_KEY,{}),SUPP=getJSON(SUPP_KEY,{});
+function today(){const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`}
+function ensure(){const t=today();if(!DATA[t])DATA[t]=Array(CONTENT.habits.length).fill(false);if(!SUPP[t])SUPP[t]=Array(CONTENT.supplements.length).fill(false);return t}
+function save(){localStorage.setItem(DATA_KEY,JSON.stringify(DATA));localStorage.setItem(SUPP_KEY,JSON.stringify(SUPP))}
+function groups(items){const m={};items.forEach((x,i)=>(m[x.group]||(m[x.group]=[])).push({x,i}));return Object.entries(m)}
+function renderItems(rootId,items,state,saveFn){const root=$(rootId),t=ensure();root.innerHTML="";groups(items).forEach(([g,arr])=>{const c=document.createElement("div");c.className="theme-card";const h=document.createElement("div");h.className="theme-head";h.textContent=g;c.append(h);arr.forEach(({x,i})=>{const r=document.createElement("div");r.className="check-row";const cb=document.createElement("input");cb.type="checkbox";cb.checked=!!state[t][i];cb.onchange=()=>{state[t][i]=cb.checked;saveFn()};const grow=document.createElement("div");grow.className="grow";grow.innerHTML=`<div>${x.name}</div><div class="meta">${x.target?`Objetivo ${x.target}/7`:([x.time,x.dose].filter(Boolean).join(" · ")||"Flexible")}</div>`;r.append(cb,grow);c.append(r)});root.append(c)})}
+function renderGuide(){const root=$("guideGrid");root.innerHTML="";CONTENT.guide.forEach(g=>{const c=document.createElement("div");c.className="card guide-card";c.innerHTML=`<div class="icon">${g.icon}</div><div><b>${g.title}</b><span class="tag">${g.priority}</span><p><b>Resumen:</b> ${g.summary}</p><p><b>Por qué:</b> ${g.why}</p><p><b>Cuándo:</b> ${g.when}</p></div>`;root.append(c)})}
+function show(v){["today","guide","settings"].forEach(x=>{document.getElementById(x+"View").classList.toggle("hidden",x!==v);document.getElementById("tab"+x[0].toUpperCase()+x.slice(1)).classList.toggle("active",x===v)})}
+async function init(){try{
+      const live=await fetch("/api/content",{cache:"no-store"});
+      if(live.ok) CONTENT=await live.json();
+      else throw new Error("No live content");
+    }catch(e){
+      CONTENT=await fetch("../content.json",{cache:"no-store"}).then(r=>r.json());
+    }document.title=CONTENT.app.name;$("appName").textContent=CONTENT.app.name;$("tagline").textContent=CONTENT.app.tagline;renderItems("habitGrid",CONTENT.habits,DATA,()=>{save()});renderItems("suppGrid",CONTENT.supplements,SUPP,()=>{save()});renderGuide()}
+$("tabToday").onclick=()=>show("today");$("tabGuide").onclick=()=>show("guide");$("tabSettings").onclick=()=>show("settings");init();
+</script>
+</body></html>
